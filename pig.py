@@ -5,9 +5,9 @@ double_points = {"Sider": 1, "Razorback": 20, "Trotter": 20,
                  "Snouter": 40, "Leaning Jowler": 60}
 single_points = {"Sider": 0, "Razorback": 5, "Trotter": 5,
                  "Snouter": 10, "Leaning Jowler": 15}
-pigs_bias = {"Sider": 0.6, "Razorback": 0.2, "Trotter": 0.1,
-             "Snouter": 0.07, "Leaning Jowler": 0.03}
-pigs_event = {"no touch": 0.9, "Oinker": 0.09, "Piggyback": 0.01}
+pigs_weights = {"Sider": 60, "Razorback": 20, "Trotter": 10,
+                "Snouter": 7, "Leaning Jowler": 3}
+pigs_events = {"no touch": 92, "Oinker": 7, "Piggyback": 1}
 
 
 class PigGame:
@@ -48,7 +48,7 @@ class PigGame:
             print(30 * ".")
             main()
         else:
-            print("bye!")
+            print("See you later!")
             sys.exit(0)
 
     def print_score(self) -> None:
@@ -67,17 +67,6 @@ class PigGame:
         :return: None
         """
 
-        def random_landing() -> str:
-            """
-            randomly pick from pigs_position_chance with weighted chance
-            :return: a random landing position
-            """
-            random_number = random.random()
-            for position in pigs_bias:
-                random_number -= pigs_bias[position]
-                if random_number <= 0:
-                    return position
-
         def process_roll(roll1: str, roll2: str) -> int:
             """
             given position of pig1 and pig2, process touching event
@@ -85,13 +74,8 @@ class PigGame:
             :return: integer of points need to add or deducted
             """
             points_delta = 0
-            special_event = None
-            random_number = random.random()
-            for event in pigs_event:
-                random_number -= pigs_event[event]
-                if random_number <= 0:
-                    special_event = event
-                    break
+            special_event = random.choices(list(pigs_events.keys()),
+                                           list(pigs_events.values()))[0]
 
             if special_event == "Oinker":
                 combo = "an Oinker!"
@@ -120,8 +104,10 @@ class PigGame:
 
             return points_delta
 
-        pig1 = random_landing()
-        pig2 = random_landing()
+        pig1 = random.choices(list(pigs_weights.keys()),
+                              list(pigs_weights.values()))[0]
+        pig2 = random.choices(list(pigs_weights.keys()),
+                              list(pigs_weights.values()))[0]
         points = process_roll(pig1, pig2)
         if self.game_round % 2 == 0:
             self.player1_point += points
