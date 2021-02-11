@@ -175,10 +175,17 @@ def main() -> None:
         player1 = command_line_argument[1]
         player2 = command_line_argument[2]
         max_point = int(command_line_argument[3])
+        if len(command_line_argument) > 4:
+            raise IndexError()
+        elif max_point <= 0:
+            raise ValueError
     except IndexError:
         print("Invalid Command Line Argument.")
         print("Usage:[player 1 name] [player 2 name] [target score]")
         print("Example: Spot Rover 300")
+        sys.exit(1)
+    except ValueError:
+        print("Third arguments needs to be an positive integer")
         sys.exit(1)
 
     print(f"Competitors: {player1} vs. {player2}\n")
